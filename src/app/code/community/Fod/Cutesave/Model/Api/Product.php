@@ -1,108 +1,116 @@
 <?php
 
-/*
- * based on Mage_Catalog_Model_Product_Api, replaced $product->save() with fod_cutesave queue
- */
+class Fodcamp_Cutesave_Model_Api_Product extends Mage_Api_Model_Resource_Abstract {
 
-class Fod_Cutesave_Model_Api_Product extends Mage_Catalog_Model_Product_Api {
+    /**
+     * @return Mage_Core_Model_Session
+     */
+    protected function _getDataSession() {
+        return Mage::getSingleton("core/session",  array("name"=>"api"));
+    }
 
-    public function update($productId, $productData, $store = null, $identifierType = null) {
-        $product = $this->_getProduct($productId, $store, $identifierType);
+    protected function _getRowData() {
+        return $this->_getDataSession()->getData('rows');
+    }
 
-        $this->_prepareDataForSave($product, $productData);
+    protected function _addRowData( Array $row ) {
+        $rows = $this->_getRowData();
+        $rows[] = $row;
+        $this->_getDataSession()->setData('rows', $rows);
+        return $this;
+    }
 
-        try {
-            if (is_array($errors = $product->validate())) {
-                $strErrors = array();
-                foreach ($errors as $code => $error) {
-                    if ($error === true) {
-                        $error = Mage::helper('catalog')->__('Value for "%s" is invalid.', $code);
-                    } else {
-                        $error = Mage::helper('catalog')->__('Value for "%s" is invalid: %s', $code, $error);
-                    }
-                    $strErrors[] = $error;
-                }
-                $this->_fault('data_invalid', implode("\n", $strErrors));
+    public function getAttributeSet() {
+        return 'Promidata';
+    }
+
+    public function getWebsites() {
+        return 'base';
+    }
+
+    public function getTaxClassId() {
+        return 2;
+    }
+
+    public function getbasicattributes() {
+        $templatexml = Mage::getConfig()->getNode('fodcamp_cutesave/basic_attributes');
+        /* @var $templatexml Mage_Core_Model_Config_Element */
+        return $templatexml->asCanonicalArray();
+    }
+
+    protected function _addExtraRows( array $data ) {
+        if ( is_array($data['categories']) && count($data['categories']) > 0 ) {
+            foreach( $data['categories'] AS $category ) {
+                $this->_addRowData( array('_category' => $category) );
             }
+        }
+    }
 
-            Mage::getSingleton('fod_cutesave/queue')->add($product);
-            Mage::getSingleton('fod_cutesave/queue')->write();
-        } catch (Mage_Core_Exception $e) {
-            $this->_fault('data_invalid', $e->getMessage());
+    public function addsimple( array $attributedata) {
+        $base = array(
+            '_type' => 'simple',
+            '_attribute_set' => $this->getAttributeSet(),
+            'tax_class_id'  => $this->getTaxClassId(),
+            'visibility' => Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH,
+            'weight'    => 0,
+            '_product_websites' => $this->getWebsites()
+        );
+        $this->_addRowData( array_merge( $base, $attributedata ) );
+        $this->_addExtraRows($attributedata);
+
+        return true;
+    }
+
+    public function addconfigurable( array $configurable_attributes, array $simple_products, array $attributedata ) {
+        $this->_addRowData( $configurable_attributes );
+
+        foreach( $simple_products AS $simpledata ) {
+            $this->addsimple( $simpledata );
+        }
+        $base = array(
+            '_type' => 'configurable',
+            '_attribute_set' => $this->getAttributeSet(),
+            'tax_class_id'  => $this->getTaxClassId(),
+            'visibility' => Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH,
+            '_product_websites' => $this->getWebsites()
+        );
+        $this->_addRowData( array_merge( $base, $attributedata ) );
+        $this->_addExtraRows($attributedata);
+
+        foreach( $configurable_attributes AS $attribute_code ) {
+            $this->_addRowData( array('_super_attribute_code' => $attribute_code) );
+        }
+
+        foreach( $simple_products AS $simple ) {
+            $this->_addRowData( array('_super_products_sku' => $simple['sku'] ) );
         }
 
         return true;
     }
 
-    public function create($type, $set, $sku, $productData, $store = null) {
-        if (!$type || !$set || !$sku) {
-            $this->_fault('data_invalid');
-        }
+    public function write() {
 
-        $this->_checkProductTypeExists($type);
-        $this->_checkProductAttributeSet($set);
+        Mage::helper('fodcamp_cutesave')->log( $this->_getRowData() );
 
-        /** @var $product Mage_Catalog_Model_Product */
-        $product = Mage::getModel('catalog/product');
-        $product->setStoreId($this->_getStoreId($store))
-                ->setAttributeSetId($set)
-                ->setTypeId($type)
-                ->setSku($sku);
+        $sourceadapter = Mage::getModel('fodcamp_cutesave/product_data');
+        /* @var $sourceadapter Fodcamp_Cutesave_Model_Product_Data */
+        $sourceadapter->setDataBunch( $this->_getRowData() );
 
-        $this->_prepareDataForSave($product, $productData);
+        $import = Mage::getModel('fodcamp_cutesave/product');
+        /* @var $import Fodcamp_Cutesave_Model_Product */
 
-        try {
-            if (is_array($errors = $product->validate())) {
-                $strErrors = array();
-                foreach ($errors as $code => $error) {
-                    if ($error === true) {
-                        $error = Mage::helper('catalog')->__('Attribute "%s" is invalid.', $code);
-                    }
-                    $strErrors[] = $error;
-                }
-                $this->_fault('data_invalid', implode("\n", $strErrors));
-            }
+        $import->setDataSourceModel( $sourceadapter );
+        $import->importData();
 
-            Mage::getSingleton('fod_cutesave/queue')->add($product);
-            Mage::getSingleton('fod_cutesave/queue')->write();
-        } catch (Mage_Core_Exception $e) {
-            $this->_fault('data_invalid', $e->getMessage());
-        }
-
-        return $product->getId();
+        return $import->getErrorMessages();
     }
 
-    protected function _prepareDataForSave($product, $productData) {
-
-        foreach ($product->getTypeInstance(true)->getEditableAttributes($product) as $attribute) {
-            if ($this->_isAllowedAttribute($attribute)) {
-                if (isset($productData[$attribute->getAttributeCode()])) {
-                    $product->setData(
-                            $attribute->getAttributeCode(), $productData[$attribute->getAttributeCode()]
-                    );
-                } elseif (isset($productData['additional_attributes']['single_data'][$attribute->getAttributeCode()])) {
-                    $product->setData(
-                            $attribute->getAttributeCode(), $productData['additional_attributes']['single_data'][$attribute->getAttributeCode()]
-                    );
-                } elseif (isset($productData['additional_attributes']['multi_data'][$attribute->getAttributeCode()])) {
-                    $product->setData(
-                            $attribute->getAttributeCode(), $productData['additional_attributes']['multi_data'][$attribute->getAttributeCode()]
-                    );
-                }
-            }
-        }
+    public function reindex() {
+        // Refresh Index-Stuff
+        $processes = Mage::getSingleton('index/indexer')->getProcessesCollection();
+        $processes->walk('reindexAll');
     }
 
-    public function multiwrite($data) {
-        foreach($data as $productData) {
-            $product = Mage::getModel('catalog/product');
-            /** @var Mage_Catalog_Model_Product $product */
-            
-            $this->_prepareDataForSave($product, $productData);
-            
-            Mage::getSingleton('fod_cutesave/queue')->add($product);
-        }
-        
-        Mage::getSingleton('fod_cutesave/queue')->write();
-    }
+    
+    
 }

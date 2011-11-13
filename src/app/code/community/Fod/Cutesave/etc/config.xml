@@ -1,19 +1,41 @@
 <?xml version="1.0"?>
 <config>
     <modules>
-        <Fod_Cutesave>
+        <Fodcamp_Cutesave>
             <version>0.9.0.0</version>
-        </Fod_Cutesave>
+        </Fodcamp_Cutesave>
     </modules>
 
     <global>
 
         <models>
-            <fod_cutesave>
-                <class>Fod_Cutesave_Model</class>
-            </fod_cutesave>
+            <fodcamp_cutesave>
+                <class>Fodcamp_Cutesave_Model</class>
+            </fodcamp_cutesave>
         </models>
+
+        <helpers>
+            <fodcamp_cutesave>
+                <class>Fodcamp_Cutesave_Helper</class>
+            </fodcamp_cutesave>
+        </helpers>
 
     </global>
 
+    <fodcamp_cutesave>
+        <basic_attributes>
+            <sku/>
+            <name/>
+            <price/>
+            <status>0</status>
+            <description/>
+            <short_description/>
+            <size/>
+            <color/>
+            <is_in_stock>1</is_in_stock>
+            <categories></categories>
+        </basic_attributes>
+    </fodcamp_cutesave>
+
+    
 </config>
