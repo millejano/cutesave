@@ -2,45 +2,45 @@
 <config>
     <api>
         <resources>
-            <fodcamp_cutesave_product>
-                <model>fodcamp_cutesave/api_product</model>
+            <fod_cutesave_product>
+                <model>fod_cutesave/api_product</model>
                 <title>Codex ImportAPI</title>
-                <acl>fodcamp_cutesave/product</acl>
+                <acl>fod_cutesave/product</acl>
                 <methods>
 
                     <getbasicattributes>
                         <title>getbasicattributes</title>
-                        <acl>fodcamp_cutesave/product/getbasicattributes</acl>
+                        <acl>fod_cutesave/product/getbasicattributes</acl>
                     </getbasicattributes>
 
                     <addsimple>
                         <title>addsimple</title>
-                        <acl>fodcamp_cutesave/product/addsimple</acl>
+                        <acl>fod_cutesave/product/addsimple</acl>
                     </addsimple>
                     
                     <addconfigurable>
                         <title>addconfigurable</title>
-                        <acl>fodcamp_cutesave/product/addconfigurable</acl>
+                        <acl>fod_cutesave/product/addconfigurable</acl>
                     </addconfigurable>
 
                     <write>
                         <title>write</title>
-                        <acl>fodcamp_cutesave/product/write</acl>
+                        <acl>fod_cutesave/product/write</acl>
                     </write>
 
                     <reindex>
                         <title>reindex</title>
-                        <acl>fodcamp_cutesave/product/reindex</acl>
+                        <acl>fod_cutesave/product/reindex</acl>
                     </reindex>
 
                 </methods>
-            </fodcamp_cutesave_product>
+            </fod_cutesave_product>
         </resources>
 
         <acl>
             <resources>
-                <fodcamp_cutesave_product>
-                    <title>Fodcamp_Cutesave</title>
+                <fod_cutesave_product>
+                    <title>Fod_Cutesave</title>
                     <sort_order>10</sort_order>
 
                     <add>
@@ -55,7 +55,7 @@
                         <titel>write</titel>
                     </write>
 
-                </fodcamp_cutesave_product>
+                </fod_cutesave_product>
             </resources>
         </acl>
 

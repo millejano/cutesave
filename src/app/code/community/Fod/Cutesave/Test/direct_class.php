@@ -5,8 +5,8 @@ Mage::app('admin');
 
 //Mage::setIsDeveloperMode(true);
 
-$product = Mage::getModel('fodcamp_cutesave/api_product');
-/* @var $product Fodcamp_Cutesave_Model_Api_Product */
+$product = Mage::getModel('fod_cutesave/api_product');
+/* @var $product Fod_Cutesave_Model_Api_Product */
 
 print_r( $product->getbasicattributes() );
 

@@ -1,6 +1,6 @@
 <?php
 
-class Fodcamp_Cutesave_Model_Product_Data extends Mage_ImportExport_Model_Mysql4_Import_Data {
+class Fod_Cutesave_Model_Product_Data extends Mage_ImportExport_Model_Mysql4_Import_Data {
 
     protected $_dataBunch = null;
 

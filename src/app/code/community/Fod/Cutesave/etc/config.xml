@@ -1,28 +1,28 @@
 <?xml version="1.0"?>
 <config>
     <modules>
-        <Fodcamp_Cutesave>
+        <Fod_Cutesave>
             <version>0.9.0.0</version>
-        </Fodcamp_Cutesave>
+        </Fod_Cutesave>
     </modules>
 
     <global>
 
         <models>
-            <fodcamp_cutesave>
-                <class>Fodcamp_Cutesave_Model</class>
-            </fodcamp_cutesave>
+            <fod_cutesave>
+                <class>Fod_Cutesave_Model</class>
+            </fod_cutesave>
         </models>
 
         <helpers>
-            <fodcamp_cutesave>
-                <class>Fodcamp_Cutesave_Helper</class>
-            </fodcamp_cutesave>
+            <fod_cutesave>
+                <class>Fod_Cutesave_Helper</class>
+            </fod_cutesave>
         </helpers>
 
     </global>
 
-    <fodcamp_cutesave>
+    <fod_cutesave>
         <basic_attributes>
             <sku/>
             <name/>
@@ -35,7 +35,7 @@
             <is_in_stock>1</is_in_stock>
             <categories></categories>
         </basic_attributes>
-    </fodcamp_cutesave>
+    </fod_cutesave>
 
     
 </config>

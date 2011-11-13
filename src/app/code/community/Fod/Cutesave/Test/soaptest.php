@@ -15,7 +15,7 @@ try {
 //
 //
 // Jetzt holen wir uns ein Vorlage-Array für Produkte
-$basicattributes = $client->call( $session, 'fodcamp_cutesave_product.getbasicattributes');
+$basicattributes = $client->call( $session, 'fod_cutesave_product.getbasicattributes');
 
 print_r( $basicattributes );
 /*
@@ -47,7 +47,7 @@ $new_product['categories'] = array( 'Kategorie1' );
 //
 //
 // Nun fügen wir das neue Produkt zur Schreib-Queue von Magento hinzu
-$client->call( $session, 'fodcamp_cutesave_product.addsimple', array( $new_product ) );
+$client->call( $session, 'fod_cutesave_product.addsimple', array( $new_product ) );
 
 
 //
@@ -56,7 +56,7 @@ $client->call( $session, 'fodcamp_cutesave_product.addsimple', array( $new_produ
 // geschrieben werden sollen
 // Rückgabe kann Fehlermeldungen erhalten (z.B. validierung)
 
-print_r( $client->call($session, 'fodcamp_cutesave_product.write' ) );
+print_r( $client->call($session, 'fod_cutesave_product.write' ) );
 
 //
 //
@@ -70,7 +70,7 @@ for($i=0; $i<5; $i++) {
     $multi_new_product = $new_product; // Wenn nehmen das new_product von oben als Vorlage
     $multi_new_product['sku'] = 'test-sku'.$i; // Und ändern nur die Artikel-Nr :)
 
-    $calls[] = array('fodcamp_cutesave_product.addsimple', array( $multi_new_product) );
+    $calls[] = array('fod_cutesave_product.addsimple', array( $multi_new_product) );
 
 }
 $client->multiCall( $session, $calls );
@@ -78,7 +78,7 @@ $client->multiCall( $session, $calls );
 //
 //
 // Auch bei einem Multiclass müssen wir danach schreiben
-print_r( $client->call($session, 'fodcamp_cutesave_product.write' ) );
+print_r( $client->call($session, 'fod_cutesave_product.write' ) );
 
 
 //
@@ -128,15 +128,15 @@ $configurable_product['description'] = 'Ich bin ein langer Text';
 $configurable_product['short_description'] = 'Kurzbeschreibung';
 $configurable_product['categories'] = array( 'Kategorie2' );
 
-$client->call( $session, 'fodcamp_cutesave_product.addconfigurable', array( $configurable_attributes, $simple_products, $configurable_product ) );
+$client->call( $session, 'fod_cutesave_product.addconfigurable', array( $configurable_attributes, $simple_products, $configurable_product ) );
 
-print_r( $client->call($session, 'fodcamp_cutesave_product.write' ) );
+print_r( $client->call($session, 'fod_cutesave_product.write' ) );
 
 
 //
 //
 // Ganz am Ende müssen wir noch die Indizes aktualisieren
-$client->call($session, 'fodcamp_cutesave_product.reindex' );
+$client->call($session, 'fod_cutesave_product.reindex' );
 
 //
 //

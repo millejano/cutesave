@@ -1,6 +1,6 @@
 <?php
 
-class Fodcamp_Cutesave_Model_Api_Product extends Mage_Api_Model_Resource_Abstract {
+class Fod_Cutesave_Model_Api_Product extends Mage_Api_Model_Resource_Abstract {
 
     /**
      * @return Mage_Core_Model_Session
@@ -21,7 +21,7 @@ class Fodcamp_Cutesave_Model_Api_Product extends Mage_Api_Model_Resource_Abstrac
     }
 
     public function getAttributeSet() {
-        return 'Promidata';
+        return 'Default';
     }
 
     public function getWebsites() {
@@ -33,7 +33,7 @@ class Fodcamp_Cutesave_Model_Api_Product extends Mage_Api_Model_Resource_Abstrac
     }
 
     public function getbasicattributes() {
-        $templatexml = Mage::getConfig()->getNode('fodcamp_cutesave/basic_attributes');
+        $templatexml = Mage::getConfig()->getNode('fod_cutesave/basic_attributes');
         /* @var $templatexml Mage_Core_Model_Config_Element */
         return $templatexml->asCanonicalArray();
     }
@@ -90,14 +90,14 @@ class Fodcamp_Cutesave_Model_Api_Product extends Mage_Api_Model_Resource_Abstrac
 
     public function write() {
 
-        Mage::helper('fodcamp_cutesave')->log( $this->_getRowData() );
+        Mage::helper('fod_cutesave')->log( $this->_getRowData() );
 
-        $sourceadapter = Mage::getModel('fodcamp_cutesave/product_data');
-        /* @var $sourceadapter Fodcamp_Cutesave_Model_Product_Data */
+        $sourceadapter = Mage::getModel('fod_cutesave/product_data');
+        /* @var $sourceadapter Fod_Cutesave_Model_Product_Data */
         $sourceadapter->setDataBunch( $this->_getRowData() );
 
-        $import = Mage::getModel('fodcamp_cutesave/product');
-        /* @var $import Fodcamp_Cutesave_Model_Product */
+        $import = Mage::getModel('fod_cutesave/product');
+        /* @var $import Fod_Cutesave_Model_Product */
 
         $import->setDataSourceModel( $sourceadapter );
         $import->importData();
