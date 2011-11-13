@@ -4,9 +4,9 @@
 //
 // Zuerst an der Api anmelden. Als Rückgabe der login-Methode gibt es eine Session-ID
 
-$client = new SoapClient('http://localhost.magento/promidata/api/soap?wsdl');
+$client = new SoapClient('http://localhost.magento/magento161/api/soap?wsdl');
 try {
-    $session = $client->login('soap-test-promidata', 'soap-test-promidata');
+    $session = $client->login('soap-test', 'soap-test'); 
 } catch (Exception $e) {
     echo $e->getMessage() . "\n";
     exit;
@@ -37,7 +37,7 @@ Array
 $new_product = $basicattributes;
 
 $new_product['sku'] = '1234';
-$new_product['name'] = 'Promidata-Test';
+$new_product['name'] = 'Testname';
 $new_product['price'] = '9.95';
 $new_product['status'] = '1'; // 1 = Enabled, 0 = Disabled
 $new_product['description'] = 'Ich bin ein langer Text';
@@ -106,7 +106,7 @@ foreach( $sizes AS $size) {
     foreach( $colors AS $color ) {
         $new_product = array();
         $new_product['sku'] = '1234-'.$color.'-'.$size;
-        $new_product['name'] = 'Configurable Promidata-Test';
+        $new_product['name'] = 'Configurable Test';
         $new_product['price'] = '9.95';
         $new_product['status'] = '1'; // 1 = Enabled, 0 = Disabled
         $new_product['description'] = 'Ich bin ein langer Text';
@@ -121,7 +121,7 @@ foreach( $sizes AS $size) {
 
 $configurable_product = $basicattributes;
 $configurable_product['sku'] = '1234-configurable';
-$configurable_product['name'] = 'Promidata-Test';
+$configurable_product['name'] = 'Test';
 $configurable_product['price'] = '9.95';
 $configurable_product['status'] = '1'; // 1 = Enabled, 0 = Disabled
 $configurable_product['description'] = 'Ich bin ein langer Text';
